@@ -1,0 +1,17 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - run: swift --version
+      - name: Build (strict concurrency, warnings as errors)
+        run: swift build -c release -Xswiftc -warnings-as-errors
+      - name: Bundle .app
+        run: make build

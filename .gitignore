@@ -1,0 +1,15 @@
+# 构建产物
+.build/
+build/
+*.dmg
+
+# 图标中间产物（icns 会提交，iconset 不用）
+Resources/AppIcon.iconset/
+
+# macOS
+.DS_Store
+
+# 编辑器
+.vscode/
+*.xcuserstate
+xcuserdata/
