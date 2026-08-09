@@ -13,6 +13,7 @@
 ![Swift](https://img.shields.io/badge/Swift-6-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
 [![Release](https://img.shields.io/github/v/release/ethan6945/macos-task-manager?include_prereleases)](https://github.com/ethan6945/macos-task-manager/releases/latest)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-ffdd00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/ethan6945)
 
 ![进程页](docs/screenshots/processes.png)
 
@@ -250,3 +251,12 @@ Sources/TaskManager/
 
 采样跑在 `SamplingEngine` actor 上，只把 `Sendable` 的值类型快照交回主线程。
 整个工程在 Swift 6 严格并发模式下零警告编译。
+
+## 请我喝杯咖啡
+
+这是个免费的 MIT 开源小项目。如果它帮你省了点时间，可以
+[**请我喝杯咖啡**](https://buymeacoffee.com/ethan6945) —— 纯自愿，这个 App 永远免费。
+
+<a href="https://buymeacoffee.com/ethan6945"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-ffdd00?style=for-the-badge&logo=buymeacoffee&logoColor=black" alt="Buy Me a Coffee" height="44"></a>
+
+其实点个 star 一样有用 —— 那是别人能搜到它的原因。

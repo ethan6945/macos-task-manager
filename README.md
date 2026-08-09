@@ -14,6 +14,7 @@ A tribute to [Dave Plummer](https://www.youtube.com/@DavesGarage), who wrote the
 ![Architecture](https://img.shields.io/badge/arch-Apple%20Silicon%20%7C%20Intel-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 [![Release](https://img.shields.io/github/v/release/ethan6945/macos-task-manager?include_prereleases)](https://github.com/ethan6945/macos-task-manager/releases/latest)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-ffdd00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/ethan6945)
 
 ![Processes](docs/screenshots/processes.png)
 
@@ -265,6 +266,15 @@ Sampling runs on the `SamplingEngine` actor and hands back `Sendable` value snap
 The whole project compiles **warning-free under Swift 6 strict concurrency**.
 
 ---
+
+## Support
+
+This is a free, MIT-licensed side project. If it saved you some time, you can
+[**buy me a coffee**](https://buymeacoffee.com/ethan6945) — entirely optional, and the app will always stay free.
+
+<a href="https://buymeacoffee.com/ethan6945"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-ffdd00?style=for-the-badge&logo=buymeacoffee&logoColor=black" alt="Buy Me a Coffee" height="44"></a>
+
+Starring the repo helps just as much — it is what makes other people find it.
 
 ## Contributing
 
