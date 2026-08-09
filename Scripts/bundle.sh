@@ -19,7 +19,8 @@ rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN" "$APP/Contents/MacOS/$APP_NAME"
 
-VERSION="1.0"
+# 版本号的唯一来源。打 tag 发布时用 VERSION=x.y.z make dmg 覆盖。
+VERSION="${VERSION:-1.0.1}"
 BUILD_NUM="$(date +%Y%m%d%H%M)"
 
 cat > "$APP/Contents/Info.plist" <<PLIST
