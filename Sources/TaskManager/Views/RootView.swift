@@ -1,7 +1,8 @@
 import SwiftUI
 
 enum Page: String, CaseIterable, Identifiable, Hashable {
-    case processes, performance, appHistory, startup, users, details, services
+    // 侧栏顺序就是这里的顺序：性能第一，进程第二
+    case performance, processes, appHistory, startup, users, details, services
 
     var id: String { rawValue }
 
@@ -33,8 +34,10 @@ enum Page: String, CaseIterable, Identifiable, Hashable {
 
 struct RootView: View {
     @Environment(SystemMonitor.self) private var monitor
-    /// 记住上次停留的页面
-    @AppStorage("page") private var pageID: String = Page.processes.rawValue
+    /// 每次启动都从性能页开始（不记忆上次停留的页面）。
+    /// `TM_PAGE` 可以指定启动页，截图脚本用。
+    @State private var pageID: String = ProcessInfo.processInfo.environment["TM_PAGE"]
+        .flatMap { Page(rawValue: $0)?.rawValue } ?? Page.performance.rawValue
     @State private var performanceTab: PerformanceTab = .cpu
     /// 从服务/详细信息页跳转过来时要定位的进程
     @State private var focusedPID: pid_t?
@@ -69,6 +72,19 @@ struct RootView: View {
             }
         }
         .onAppear {
+            // 截图脚本用：指定性能页的子页
+            if let tab = ProcessInfo.processInfo.environment["TM_PERF_TAB"] {
+                switch tab {
+                case "memory": performanceTab = .memory
+                case "gpu": performanceTab = .gpu
+                case "disk": if let d = monitor.disks.first { performanceTab = .disk(d.id) }
+                case "network":
+                    if let n = monitor.networks.first(where: { !$0.isLoopback && !$0.isVirtual && $0.hasTraffic }) {
+                        performanceTab = .network(n.id)
+                    }
+                default: performanceTab = .cpu
+                }
+            }
             SnapshotRunner.runIfRequested(
                 setPage: { pageID = $0.rawValue },
                 setPerformanceTab: { performanceTab = $0 },

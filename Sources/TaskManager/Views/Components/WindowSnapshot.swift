@@ -3,21 +3,20 @@ import SwiftUI
 
 /// 把窗口内容渲染成 PNG。
 ///
-/// 走的是 `bitmapImageRepForCachingDisplay` —— 在**自己的进程里画自己的视图**，
-/// 不经过屏幕捕获，所以不需要「屏幕录制」权限。用于导出界面快照、提 bug 时附图，
-/// 也让自动化验证能真正看到界面。
+/// 渲染的是自己进程里的 CALayer 树，不经过屏幕捕获，**不需要「屏幕录制」权限**。
+/// 用于导出界面快照、提 bug 时附图，也让自动化验证能真正看到界面。
 enum WindowSnapshot {
 
     @MainActor
     @discardableResult
-    static func capture(to url: URL) -> Bool {
+    static func capture(to url: URL) async -> Bool {
         guard let window = NSApplication.shared.windows.first(where: { $0.isVisible && $0.contentView != nil }),
               let view = window.contentView else { return false }
 
-        // 毛玻璃默认是 behind-window 混合，由窗口服务器合成，离屏渲染只会得到一块白。
-        // 截图期间临时切成 within-window，画完再还原。
-        let restore = makeVisualEffectsRenderable(in: view)
-        defer { restore() }
+        // 已知限制：左侧导航栏用的是毛玻璃材质，由窗口服务器合成，离屏渲染只能得到
+        // 一块不透明的白。试过改 blendingMode、给 List 铺实色，都没用 —— 那一列
+        // 压根不在这棵图层树里。要连侧栏一起截，只能走系统录屏（需要屏幕录制权限）。
+
 
         guard let image = renderLayerTree(of: view, scale: window.backingScaleFactor,
                                           appearance: window.effectiveAppearance)
@@ -47,46 +46,26 @@ enum WindowSnapshot {
                 bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue)
         else { return nil }
 
-        // 窗口的毛玻璃背板是窗口服务器合成的，离屏渲染拿不到，
-        // 不先铺一层窗口背景色的话深色模式会变成「白底浅灰字」。
-        appearance.performAsCurrentDrawingAppearance {
-            context.setFillColor(NSColor.windowBackgroundColor.cgColor)
-            context.fill(CGRect(x: 0, y: 0, width: pixelWidth, height: pixelHeight))
-        }
-
         // CGContext 原点在左下、AppKit 图层原点在左上，不翻转的话画面是上下颠倒的
+        context.saveGState()
         context.translateBy(x: 0, y: CGFloat(pixelHeight))
         context.scaleBy(x: scale, y: -scale)
         layer.render(in: context)
+        context.restoreGState()
+
+        // 窗口的毛玻璃背板由窗口服务器合成，离屏渲染拿不到，图层没画到的地方是全透明的
+        // （看图工具会显示成白色）。所以渲染**之后**用 destinationOver 补一层窗口背景色，
+        // 只填空白处，已经画好的内容不受影响。渲染之前铺会被图层直接覆盖掉。
+        appearance.performAsCurrentDrawingAppearance {
+            context.setBlendMode(.destinationOver)
+            context.setFillColor(NSColor.windowBackgroundColor.cgColor)
+            context.fill(CGRect(x: 0, y: 0, width: pixelWidth, height: pixelHeight))
+        }
 
         guard let cgImage = context.makeImage() else { return nil }
         let rep = NSBitmapImageRep(cgImage: cgImage)
         rep.size = size
         return rep.representation(using: .png, properties: [:])
-    }
-
-    /// 把视图树里所有 `NSVisualEffectView` 切成可离屏渲染的混合模式，返回还原闭包。
-    @MainActor
-    private static func makeVisualEffectsRenderable(in root: NSView) -> () -> Void {
-        var saved: [(view: NSVisualEffectView, blending: NSVisualEffectView.BlendingMode, state: NSVisualEffectView.State)] = []
-
-        func walk(_ view: NSView) {
-            if let effect = view as? NSVisualEffectView, effect.blendingMode == .behindWindow {
-                saved.append((effect, effect.blendingMode, effect.state))
-                effect.blendingMode = .withinWindow
-                effect.state = .active
-            }
-            view.subviews.forEach(walk)
-        }
-        walk(root)
-        root.displayIfNeeded()
-
-        return {
-            for entry in saved {
-                entry.view.blendingMode = entry.blending
-                entry.view.state = entry.state
-            }
-        }
     }
 
     @MainActor
@@ -104,7 +83,7 @@ enum WindowSnapshot {
         panel.allowedContentTypes = [.png]
         panel.nameFieldStringValue = "TaskManager.png"
         guard panel.runModal() == .OK, let url = panel.url else { return }
-        capture(to: url)
+        Task { await capture(to: url) }
     }
 }
 
@@ -143,13 +122,13 @@ enum SnapshotRunner {
                     for (name, tab) in performanceTabs() {
                         setPerformanceTab(tab)
                         try? await Task.sleep(for: .seconds(1.5))
-                        WindowSnapshot.capture(to: base.appendingPathComponent(
+                        await WindowSnapshot.capture(to: base.appendingPathComponent(
                             String(format: "%02d-performance-%@.png", index, name)))
                     }
                     continue
                 }
                 try? await Task.sleep(for: .seconds(2))
-                WindowSnapshot.capture(to: base.appendingPathComponent(
+                await WindowSnapshot.capture(to: base.appendingPathComponent(
                     String(format: "%02d-%@.png", index, page.rawValue)))
             }
             NSApplication.shared.terminate(nil)
