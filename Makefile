@@ -1,6 +1,6 @@
 APP := build/Task Manager.app
-# 图标方案：chip / bars / gauge / pulse
-ICON_STYLE ?= chip
+# 图标方案：spikes / spikes-blue / chip / bars / gauge / pulse
+ICON_STYLE ?= spikes
 
 .PHONY: all build debug run stop clean icon icon-previews dmg
 
@@ -23,7 +23,7 @@ run: build
 stop:
 	@pkill -x "Task Manager" 2>/dev/null || true
 
-## 重新生成 App 图标（ICON_STYLE=chip|bars|gauge|pulse）
+## 重新生成 App 图标（ICON_STYLE=spikes|spikes-blue|chip|bars|gauge|pulse）
 icon:
 	@swiftc -O -parse-as-library Scripts/MakeIcon.swift -o .build/makeicon
 	@mkdir -p Resources && .build/makeicon "$(PWD)/Resources" $(ICON_STYLE)

@@ -32,7 +32,7 @@ enum MakeIcon {
             return
         }
 
-        let style = arguments.first.flatMap(IconStyle.init(rawValue:)) ?? .chip
+        let style = arguments.first.flatMap(IconStyle.init(rawValue:)) ?? .spikes
         let iconset = directory.appendingPathComponent("AppIcon.iconset")
         try? FileManager.default.removeItem(at: iconset)
         try? FileManager.default.createDirectory(at: iconset, withIntermediateDirectories: true)
@@ -79,10 +79,12 @@ enum MakeIcon {
         drawGradient(context, in: body, from: palette.backgroundTop, to: palette.backgroundBottom)
 
         // 顶部高光，让图标有一点体积感。必须是渐变淡出，直接填矩形会留一道硬边。
+        // 浅色底的方案上白色高光看不见，要反过来用极淡的暗部。
+        let onLight = (style == .spikes)
         drawGradient(context,
                      in: CGRect(x: body.minX, y: body.minY + body.height * 0.42,
                                 width: body.width, height: body.height * 0.58),
-                     from: CGColor(gray: 1, alpha: 0.10),
+                     from: CGColor(gray: onLight ? 1 : 1, alpha: onLight ? 0.55 : 0.10),
                      to: CGColor(gray: 1, alpha: 0))
 
         style.draw(context, in: body, scale: size)
@@ -90,7 +92,7 @@ enum MakeIcon {
 
         // 极细的一圈描边，浅色背景下不至于糊成一团
         addRoundedRect(context, rect: body, radius: radius)
-        context.setStrokeColor(CGColor(gray: 1, alpha: 0.12))
+        context.setStrokeColor(CGColor(gray: onLight ? 0 : 1, alpha: onLight ? 0.14 : 0.12))
         context.setLineWidth(max(0.5, size * 0.004))
         context.strokePath()
 
@@ -121,6 +123,11 @@ enum MakeIcon {
 // MARK: - 方案
 
 enum IconStyle: String, CaseIterable {
+    /// 致敬旧版 Windows 任务管理器图标：浅色图表面板 + 锐利的蓝色尖峰折线。
+    /// 那个图标之所以好，就是「一眼读出这是监控系统负载的」——尖峰要少、要高、要利。
+    case spikes
+    /// 同一个概念，反过来配色：蓝底白尖峰，更贴 macOS 的观感。
+    case spikesBlue = "spikes-blue"
     /// 处理器芯片：圆角晶粒 + 四边引脚 + 中间活动脉冲
     case chip
     /// 均衡器式活动柱：一排高低不同的圆角柱，不带趋势方向
@@ -132,6 +139,16 @@ enum IconStyle: String, CaseIterable {
 
     var palette: (backgroundTop: CGColor, backgroundBottom: CGColor, accent: CGColor, accent2: CGColor) {
         switch self {
+        case .spikes:
+            (CGColor(red: 0.965, green: 0.973, blue: 0.988, alpha: 1),
+             CGColor(red: 0.878, green: 0.902, blue: 0.937, alpha: 1),
+             CGColor(red: 0.086, green: 0.435, blue: 0.898, alpha: 1),     // 深蓝尖峰
+             CGColor(red: 0.298, green: 0.612, blue: 0.965, alpha: 1))
+        case .spikesBlue:
+            (CGColor(red: 0.145, green: 0.435, blue: 0.851, alpha: 1),
+             CGColor(red: 0.055, green: 0.208, blue: 0.478, alpha: 1),
+             CGColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1),           // 白尖峰
+             CGColor(red: 0.686, green: 0.835, blue: 1.0, alpha: 1))
         case .chip:
             (CGColor(red: 0.216, green: 0.243, blue: 0.294, alpha: 1),
              CGColor(red: 0.086, green: 0.098, blue: 0.129, alpha: 1),
@@ -157,11 +174,81 @@ enum IconStyle: String, CaseIterable {
 
     func draw(_ context: CGContext, in body: CGRect, scale: CGFloat) {
         switch self {
+        case .spikes, .spikesBlue: drawSpikes(context, in: body, scale: scale)
         case .chip: drawChip(context, in: body, scale: scale)
         case .bars: drawBars(context, in: body, scale: scale)
         case .gauge: drawGauge(context, in: body, scale: scale)
         case .pulse: drawPulse(context, in: body, scale: scale)
         }
+    }
+
+    // MARK: 尖峰折线（致敬旧版 taskmgr）
+
+    private func drawSpikes(_ context: CGContext, in body: CGRect, scale: CGFloat) {
+        let colors = palette
+        let isTiny = scale <= 32
+        let plot = body.insetBy(dx: body.width * 0.13, dy: body.height * 0.20)
+        let onLight = (self == .spikes)
+
+        // 网格：小尺寸下省掉，免得糊成一片
+        if !isTiny {
+            context.setStrokeColor(CGColor(gray: onLight ? 0.0 : 1.0, alpha: 0.10))
+            context.setLineWidth(max(0.5, scale * 0.005))
+            for i in 1..<4 {
+                let y = plot.minY + plot.height * CGFloat(i) / 4
+                context.move(to: CGPoint(x: plot.minX, y: y))
+                context.addLine(to: CGPoint(x: plot.maxX, y: y))
+            }
+            for i in 1..<5 {
+                let x = plot.minX + plot.width * CGFloat(i) / 5
+                context.move(to: CGPoint(x: x, y: plot.minY))
+                context.addLine(to: CGPoint(x: x, y: plot.maxY))
+            }
+            context.strokePath()
+        }
+
+        // 关键：尖峰要少、要高、要利。旧图标就赢在这一点上。
+        let samples: [CGFloat] = isTiny
+            ? [0.10, 0.10, 0.92, 0.14, 0.70, 0.12, 0.10]
+            : [0.08, 0.10, 0.09, 0.86, 0.12, 0.11, 0.62, 0.10, 1.00, 0.13, 0.09, 0.45, 0.10, 0.08]
+
+        var points: [CGPoint] = []
+        for (index, value) in samples.enumerated() {
+            let x = plot.minX + plot.width * CGFloat(index) / CGFloat(samples.count - 1)
+            points.append(CGPoint(x: x, y: plot.minY + plot.height * value))
+        }
+
+        // 折线下方的填充，让尖峰更有份量
+        let area = CGMutablePath()
+        area.move(to: CGPoint(x: points[0].x, y: plot.minY))
+        area.addLines(between: points)
+        area.addLine(to: CGPoint(x: points[points.count - 1].x, y: plot.minY))
+        area.closeSubpath()
+        context.saveGState()
+        context.addPath(area)
+        context.clip()
+        MakeIcon.drawGradient(context, in: plot,
+                              from: colors.accent.copy(alpha: 0.38) ?? colors.accent,
+                              to: colors.accent.copy(alpha: 0.04) ?? colors.accent)
+        context.restoreGState()
+
+        // 折线本体：尖角不圆化，保留「利」的感觉
+        let line = CGMutablePath()
+        line.addLines(between: points)
+        context.addPath(line)
+        context.setStrokeColor(colors.accent)
+        context.setLineWidth(max(1.5, scale * (isTiny ? 0.055 : 0.042)))
+        context.setLineJoin(.miter)
+        context.setMiterLimit(6)
+        context.setLineCap(.butt)
+        context.strokePath()
+
+        // 基线
+        context.setStrokeColor(colors.accent.copy(alpha: 0.55) ?? colors.accent)
+        context.setLineWidth(max(1, scale * 0.016))
+        context.move(to: CGPoint(x: plot.minX, y: plot.minY))
+        context.addLine(to: CGPoint(x: plot.maxX, y: plot.minY))
+        context.strokePath()
     }
 
     // MARK: 芯片

@@ -52,7 +52,7 @@ if [ ! -f "$ROOT/Resources/AppIcon.icns" ]; then
     echo "==> 生成 App 图标"
     mkdir -p "$ROOT/Resources"
     swiftc -O -parse-as-library "$ROOT/Scripts/MakeIcon.swift" -o "$ROOT/.build/makeicon" \
-        && "$ROOT/.build/makeicon" "$ROOT/Resources" chip >/dev/null \
+        && "$ROOT/.build/makeicon" "$ROOT/Resources" spikes >/dev/null \
         && iconutil -c icns "$ROOT/Resources/AppIcon.iconset" -o "$ROOT/Resources/AppIcon.icns"
 fi
 if [ -f "$ROOT/Resources/AppIcon.icns" ]; then
