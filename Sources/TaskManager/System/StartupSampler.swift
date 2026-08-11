@@ -63,7 +63,6 @@ enum StartupSampler {
                       let dict = plist as? [String: Any] else { continue }
 
                 let label = dict["Label"] as? String ?? (name as NSString).deletingPathExtension
-                guard !Redaction.hidesThirdPartyJob(label) else { continue }
                 let program = dict["Program"] as? String
                     ?? (dict["ProgramArguments"] as? [String])?.first
 

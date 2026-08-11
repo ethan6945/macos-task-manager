@@ -8,6 +8,8 @@ struct Sample: Sendable {
     var disks: [DiskSnapshot] = []
     var networks: [NetworkInterfaceSnapshot] = []
     var processes: [ProcessRow] = []
+    /// 正在监听的 TCP 端口。不叫 `ports` —— `ProcessRow.ports` 是 Mach port 数。
+    var listeningPorts: [ListeningPort] = []
     var topHealthy = false
     var topUnavailable = false
     var openFiles: Int = 0
@@ -23,6 +25,7 @@ actor SamplingEngine {
     private let diskSampler = DiskSampler()
     private let networkSampler = NetworkSampler()
     private let processSampler = ProcessSampler()
+    private let portSampler = PortSampler()
     private let topStream = TopStream()
 
     private var topInterval: TimeInterval = 0
@@ -47,6 +50,11 @@ actor SamplingEngine {
         topInterval = 0
     }
 
+    /// 让下一拍绕过 PortSampler 的节流缓存（「网络端口」页的刷新按钮用）。
+    func invalidatePorts() {
+        portSampler.invalidate()
+    }
+
     func tick(appIdentities: [pid_t: AppIdentity]) -> Sample {
         // top 子进程可能被外部杀掉（它自己也会出现在进程列表里）。发现挂了就重启，
         // 否则其他用户的进程会永久失去指标。
@@ -61,6 +69,7 @@ actor SamplingEngine {
         sample.disks = diskSampler.sample()
         sample.networks = networkSampler.sample()
         sample.openFiles = Int(Sysctl.openFileCount ?? 0)
+        sample.listeningPorts = portSampler.sample()
 
         let metrics = topStream.metrics()
         sample.topHealthy = topStream.isHealthy

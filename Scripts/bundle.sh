@@ -20,7 +20,7 @@ mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN" "$APP/Contents/MacOS/$APP_NAME"
 
 # 版本号的唯一来源。打 tag 发布时用 VERSION=x.y.z make dmg 覆盖。
-VERSION="${VERSION:-1.0.1}"
+VERSION="${VERSION:-1.0.3}"
 BUILD_NUM="$(date +%Y%m%d%H%M)"
 
 cat > "$APP/Contents/Info.plist" <<PLIST
@@ -39,6 +39,12 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>CFBundleIconFile</key>          <string>AppIcon</string>
     <key>LSMinimumSystemVersion</key>    <string>14.0</string>
     <key>NSHighResolutionCapable</key>   <true/>
+    <!-- 「网络端口」页的 Web 检测要对 http://127.0.0.1:PORT 发明文请求。
+         只放行 localhost / .local / 链路本地，不开 NSAllowsArbitraryLoads。 -->
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsLocalNetworking</key><true/>
+    </dict>
     <key>NSPrincipalClass</key>          <string>NSApplication</string>
     <key>NSSupportsAutomaticTermination</key><false/>
     <key>NSSupportsSuddenTermination</key><false/>

@@ -63,6 +63,13 @@ xattr -dr com.apple.quarantine "/Applications/Task Manager.app"
 所有进程一屏看全，分成**应用**和**后台进程**两组，带 CPU、内存、磁盘、线程、能耗、PID、用户。
 点列头排序，按名字或 PID 搜索，工具栏和右键菜单都能**结束进程**或**强制结束**。
 
+### 网络端口
+
+本机所有正在监听的 TCP 端口，以及占用它们的进程 —— 用来找出**后台跑着的本地服务**。
+`http://127.0.0.1:8770` 这样的地址可以直接点开，也能按需**检测某个端口是不是 Web 服务**
+（只在你点「检测」时才发一次请求，从不自动扫描）。默认只显示本机能访问到的端口。
+不含 UDP，也不含向外建立的连接。
+
 ### 详细信息
 
 同一份列表，但有 16 列，需要看真实数据时用：状态、架构、父进程、优先级、CPU 时间、端口、
@@ -93,6 +100,7 @@ xattr -dr com.apple.quarantine "/Applications/Task Manager.app"
 | | |
 |---|---|
 | **进程** | ![进程](docs/screenshots/processes.png) |
+| **网络端口** | ![网络端口](docs/screenshots/ports.png) |
 | **性能 › 内存** | ![内存](docs/screenshots/performance-memory.png) |
 | **性能 › GPU** | ![GPU](docs/screenshots/performance-gpu.png) |
 | **性能 › 磁盘** | ![磁盘](docs/screenshots/performance-disk.png) |
@@ -102,6 +110,7 @@ xattr -dr com.apple.quarantine "/Applications/Task Manager.app"
 | **服务** | ![服务](docs/screenshots/services.png) |
 | **用户** | ![用户](docs/screenshots/users.png) |
 | **应用历史记录** | ![应用历史记录](docs/screenshots/app-history.png) |
+| **设置** | ![设置](docs/screenshots/settings.png) |
 
 </details>
 
@@ -114,7 +123,7 @@ xattr -dr com.apple.quarantine "/Applications/Task Manager.app"
 | **刷新速率** | 高 (1s) · 正常 (2s) · 低 (4s) · 暂停 —— 工具栏或「查看」菜单 |
 | **外观** | 浅色、深色或跟随系统，另有 8 种强调色 |
 | **语言** | 中文 / English，**切换即生效，不用重启** |
-| **隐私模式** | 遮掉用户名和主机名、隐藏第三方启动项 —— 分享截图前打开它 |
+| **侧栏** | 用不上的页面可以关掉 —— **设置 › 侧栏** |
 | **保存窗口截图** | **⇧⌘S** 把窗口存成 PNG |
 | **窗口置顶** | 「查看」菜单 |
 | **设置** | **⌘,** |

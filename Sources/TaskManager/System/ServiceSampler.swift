@@ -30,7 +30,6 @@ enum ServiceSampler {
             guard fields.count >= 3 else { continue }
             let label = fields[2].trimmingCharacters(in: .whitespaces)
             guard !label.isEmpty else { continue }
-            guard !Redaction.hidesThirdPartyJob(label) else { continue }
             result.append(ServiceEntry(
                 label: label,
                 pid: pid_t(fields[0]),

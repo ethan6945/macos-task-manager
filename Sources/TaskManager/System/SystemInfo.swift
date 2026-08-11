@@ -52,7 +52,7 @@ struct SystemInfo: Sendable {
         let os = ProcessInfo.processInfo.operatingSystemVersion
         info.osVersion = "macOS \(os.majorVersion).\(os.minorVersion).\(os.patchVersion)"
         // 不能用 ProcessInfo.hostName：它走 NSHost 的阻塞式反向 DNS，网络不通时会把主线程挂死。
-        info.hostName = Redaction.hostName(Sysctl.string("kern.hostname") ?? "")
+        info.hostName = Sysctl.string("kern.hostname") ?? ""
 
         return info
     }

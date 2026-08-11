@@ -176,7 +176,7 @@ extension Sysctl {
     /// 由 uid 取用户名。
     static func userName(_ uid: uid_t) -> String {
         if let cached = userNameCache.withLock({ $0[uid] }) {
-            return Redaction.userName(cached, uid: uid)
+            return cached
         }
         let name: String
         if let pw = getpwuid(uid), let raw = pw.pointee.pw_name {
@@ -185,6 +185,6 @@ extension Sysctl {
             name = String(uid)
         }
         userNameCache.withLock { $0[uid] = name }
-        return Redaction.userName(name, uid: uid)
+        return name
     }
 }

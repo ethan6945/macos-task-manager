@@ -3,8 +3,8 @@ import SwiftUI
 struct SettingsView: View {
     private var theme: ThemeSettings { .shared }
     private var localizer: Localizer { .shared }
+    private var sidebar: SidebarSettings { .shared }
     @Environment(SystemMonitor.self) private var monitor
-    @AppStorage("privacyMode") private var privacyMode = false
 
     var body: some View {
         @Bindable var theme = theme
@@ -33,6 +33,21 @@ struct SettingsView: View {
                 }
             }
 
+            Section(L("侧栏")) {
+                ForEach(Page.allCases) { item in
+                    Toggle(isOn: Binding(
+                        get: { sidebar.isVisible(item) },
+                        set: { sidebar.setVisible(item, $0) }
+                    )) {
+                        Label(item.title, systemImage: item.symbol)
+                    }
+                    .disabled(!sidebar.canToggle(item))
+                }
+                Text(L("取消勾选的页面不会出现在侧栏里。至少要留下一页。"))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
             Section(L("语言")) {
                 Picker(L("语言"), selection: $localizer.language) {
                     ForEach(AppLanguage.allCases) { option in
@@ -50,19 +65,7 @@ struct SettingsView: View {
                 }
                 .pickerStyle(.segmented)
             }
-
-            Section(L("隐私")) {
-                Toggle(L("隐私模式"), isOn: $privacyMode)
-                Text(L("分享截图时用：用户名显示成 user、主机名显示成 mac，服务页与启动项页只列 com.apple.* 的系统作业。进程名不受影响。"))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            Text(L("界面语言与外观会立即生效，无需重启。"))
-                .font(.caption)
-                .foregroundStyle(.secondary)
         }
-        .onChange(of: privacyMode) { _, _ in monitor.refreshSlowData() }
         .formStyle(.grouped)
         .frame(width: 420)
         .fixedSize(horizontal: false, vertical: true)

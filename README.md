@@ -69,6 +69,14 @@ Every process on one screen, split into **Apps** and **Background processes**, w
 disk, threads, energy, PID and user. Sort by any column, search by name or PID, and **End task**
 or **Force quit** from the toolbar or the right-click menu.
 
+### Network ports
+
+Every TCP port listening on this Mac and the process holding it — the page for finding the
+**local services running in the background**. Addresses like `http://127.0.0.1:8770` open in your
+browser with one click, and you can **check whether a port actually serves HTTP** on demand (one
+request, sent only when you click Check — nothing is ever scanned automatically). Ports reachable
+from this Mac are shown by default. No UDP, no outbound connections.
+
 ### Details
 
 The same list with 16 columns for when you need the real numbers: status, architecture, parent
@@ -101,6 +109,7 @@ Task Manager.
 | | |
 |---|---|
 | **Processes** | ![Processes](docs/screenshots/processes.png) |
+| **Network ports** | ![Network ports](docs/screenshots/ports.png) |
 | **Performance › Memory** | ![Memory](docs/screenshots/performance-memory.png) |
 | **Performance › GPU** | ![GPU](docs/screenshots/performance-gpu.png) |
 | **Performance › Disk** | ![Disk](docs/screenshots/performance-disk.png) |
@@ -110,6 +119,7 @@ Task Manager.
 | **Services** | ![Services](docs/screenshots/services.png) |
 | **User** | ![User](docs/screenshots/users.png) |
 | **App history** | ![App history](docs/screenshots/app-history.png) |
+| **Settings** | ![Settings](docs/screenshots/settings.png) |
 
 </details>
 
@@ -122,7 +132,7 @@ Task Manager.
 | **Update speed** | High (1s) · Normal (2s) · Low (4s) · Paused — toolbar or the View menu |
 | **Appearance** | Light, dark or match system, plus 8 accent colours |
 | **Language** | English or 简体中文, **switches instantly without restarting** |
-| **Privacy mode** | Masks your user name and host name and hides third-party startup items — turn it on before sharing a screenshot |
+| **Sidebar** | Hide the pages you never use — **Settings › Sidebar** |
 | **Save a snapshot** | **⇧⌘S** saves the window as a PNG |
 | **Always on top** | View menu |
 | **Settings** | **⌘,** |

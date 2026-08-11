@@ -31,7 +31,7 @@ enum UserSampler {
             let user = String(cTuple: record.ut_user)
             guard !user.isEmpty else { continue }
             result.append(LoginSession(
-                user: Redaction.userName(user, uid: Redaction.firstRealUserID),
+                user: user,
                 line: String(cTuple: record.ut_line),
                 host: String(cTuple: record.ut_host),
                 pid: record.ut_pid,

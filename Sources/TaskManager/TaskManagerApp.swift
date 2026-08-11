@@ -5,7 +5,6 @@ struct TaskManagerApp: App {
     @State private var monitor = SystemMonitor()
     @State private var theme = ThemeSettings.shared
     @State private var localizer = Localizer.shared
-    @AppStorage("privacyMode") private var privacyMode = false
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     var body: some Scene {
@@ -48,9 +47,6 @@ struct TaskManagerApp: App {
                         Text(option.displayName).tag(option)
                     }
                 }
-                Divider()
-                Toggle(L("隐私模式"), isOn: $privacyMode)
-                    .help(L("分享截图时用：隐藏用户名、主机名和第三方启动项/服务。"))
                 Divider()
                 Toggle(L("窗口置顶"), isOn: Binding(
                     get: { appDelegate.isFloating },

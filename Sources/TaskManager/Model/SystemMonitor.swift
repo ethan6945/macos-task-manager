@@ -45,6 +45,7 @@ final class SystemMonitor {
     private(set) var volumes: [VolumeInfo] = []
     private(set) var networks: [NetworkInterfaceSnapshot] = []
     private(set) var processes: [ProcessRow] = []
+    private(set) var listeningPorts: [ListeningPort] = []
     private(set) var openFiles = 0
     private(set) var lastUpdate = Date.distantPast
 
@@ -153,6 +154,17 @@ final class SystemMonitor {
         }
     }
 
+    /// 「网络端口」页的刷新按钮：绕过端口采样的节流缓存，立刻重采一次。
+    func refreshPorts() {
+        Task { [weak self] in
+            guard let self else { return }
+            await self.engine.invalidatePorts()
+            let identities = Self.collectAppIdentities()
+            let sample = await self.engine.tick(appIdentities: identities)
+            self.apply(sample)
+        }
+    }
+
     // MARK: - 应用快照
 
     private func apply(_ sample: Sample) {
@@ -162,6 +174,7 @@ final class SystemMonitor {
         disks = sample.disks
         networks = sample.networks
         processes = sample.processes
+        listeningPorts = sample.listeningPorts
         openFiles = sample.openFiles
         metricsDegraded = sample.topUnavailable || !sample.topHealthy
         lastUpdate = sample.timestamp

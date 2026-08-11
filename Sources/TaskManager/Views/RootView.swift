@@ -2,7 +2,7 @@ import SwiftUI
 
 enum Page: String, CaseIterable, Identifiable, Hashable {
     // 侧栏顺序就是这里的顺序：性能第一，进程第二
-    case performance, processes, appHistory, startup, users, details, services
+    case performance, processes, ports, appHistory, startup, users, details, services
 
     var id: String { rawValue }
 
@@ -11,6 +11,7 @@ enum Page: String, CaseIterable, Identifiable, Hashable {
         switch self {
         case .processes: L("进程")
         case .performance: L("性能")
+        case .ports: L("网络端口")
         case .appHistory: L("应用历史记录")
         case .startup: L("启动应用")
         case .users: L("用户")
@@ -23,6 +24,7 @@ enum Page: String, CaseIterable, Identifiable, Hashable {
         switch self {
         case .processes: "list.bullet.rectangle"
         case .performance: "waveform.path.ecg"
+        case .ports: "network"
         case .appHistory: "clock.arrow.circlepath"
         case .startup: "power"
         case .users: "person.2"
@@ -42,16 +44,22 @@ struct RootView: View {
     /// 从服务/详细信息页跳转过来时要定位的进程
     @State private var focusedPID: pid_t?
 
+    private var sidebar: SidebarSettings { .shared }
+
     private var page: Binding<Page> {
         Binding(
-            get: { Page(rawValue: pageID) ?? .processes },
+            get: {
+                let current = Page(rawValue: pageID) ?? .processes
+                // 当前页刚在设置里被藏起来时，退回第一个还显示着的页
+                return sidebar.isVisible(current) ? current : (sidebar.visiblePages.first ?? .performance)
+            },
             set: { pageID = $0.rawValue }
         )
     }
 
     var body: some View {
         NavigationSplitView {
-            List(Page.allCases, selection: page) { item in
+            List(sidebar.visiblePages, selection: page) { item in
                 Label(item.title, systemImage: item.symbol).tag(item)
             }
             .navigationSplitViewColumnWidth(min: 168, ideal: 190, max: 240)
@@ -108,6 +116,11 @@ struct RootView: View {
             ProcessesView(focusedPID: $focusedPID)
         case .performance:
             PerformanceView(tab: $performanceTab)
+        case .ports:
+            PortsView(onReveal: { pid in
+                focusedPID = pid
+                pageID = Page.details.rawValue
+            })
         case .appHistory:
             AppHistoryView()
         case .startup:

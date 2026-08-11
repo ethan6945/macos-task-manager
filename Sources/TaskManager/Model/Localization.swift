@@ -98,13 +98,6 @@ extension Localizer {
         "%@（%d）：%@": "%@ (%d): %@",
         "%@（uid %d）": "%@ (uid %d)",
 
-        "隐私": "Privacy",
-        "隐私模式": "Privacy mode",
-        "分享截图时用：隐藏用户名、主机名和第三方启动项/服务。":
-            "For sharing screenshots: hides your user name, host name and third-party startup items / services.",
-        "分享截图时用：用户名显示成 user、主机名显示成 mac，服务页与启动项页只列 com.apple.* 的系统作业。进程名不受影响。":
-            "For sharing screenshots: user names show as \"user\", the host name as \"mac\", and the Services and Startup pages list only com.apple.* system jobs. Process names are not affected.",
-
         // MARK: 页面名
         "进程": "Processes",
         "性能": "Performance",
@@ -133,7 +126,6 @@ extension Localizer {
         "黄色": "Yellow",
         "绿色": "Green",
         "石墨色": "Graphite",
-        "界面语言与外观会立即生效，无需重启。": "Language and appearance changes apply immediately — no restart needed.",
 
         // MARK: 进程状态 / 优先级
         "空闲": "Idle",
@@ -366,6 +358,40 @@ extension Localizer {
         "上次退出码 %d": "Last exit code %d",
         "只列出当前用户域（gui/%d）的 launchd 作业。系统域（system/）需要管理员权限才能枚举，本程序不提权，也不提供启停按钮。":
             "Only launchd jobs in your user domain (gui/%d) are listed. Enumerating the system domain requires administrator rights, which this app does not request — so there are no start/stop buttons.",
+
+        // MARK: 侧栏
+        "侧栏": "Sidebar",
+        "取消勾选的页面不会出现在侧栏里。至少要留下一页。":
+            "Unchecked pages are hidden from the sidebar. At least one page must stay.",
+
+        // MARK: 网络端口
+        "网络端口": "Network Ports",
+        "只看本机可访问的服务": "Only services reachable from this Mac",
+        "监听中 %d 个端口": "%d listening ports",
+        "搜索端口或进程": "Search ports or processes",
+        "端口号": "Port",
+        "地址": "Address",
+        "范围": "Scope",
+        "打开": "Open",
+        "Web 检测": "Web check",
+        "检测": "Check",
+        "检测中…": "Checking…",
+        "不是 Web 服务": "Not a web service",
+        "超时": "Timed out",
+        "无法连接": "Cannot connect",
+        "URL 无效": "Invalid URL",
+        "被 App Transport Security 拦截": "Blocked by App Transport Security",
+        "%@ %d · %@": "%@ %d · %@",
+        "%@ %d": "%@ %d",
+        "仅本机": "Loopback only",
+        "所有网络接口": "All interfaces",
+        "指定地址": "Bound address",
+        "在浏览器中打开": "Open in Browser",
+        "检测是否为 Web 服务": "Check whether it serves HTTP",
+        "拷贝地址": "Copy address",
+        "拷贝端口": "Copy port",
+        "端口列表来自 netstat，只列出正在监听的 TCP 端口（不含 UDP，也不含向外建立的连接）。「检测」会向 127.0.0.1 发一次 HTTP 请求，只在你点击时才发。本页不提供结束进程的操作。":
+            "Ports come from netstat and cover listening TCP sockets only — no UDP, no outbound connections. \"Check\" sends one HTTP request to 127.0.0.1, and only when you click it. This page offers no way to end a process.",
 
         // MARK: 用户
         "本机登录": "Console",
