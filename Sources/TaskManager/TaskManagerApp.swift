@@ -31,23 +31,6 @@ struct TaskManagerApp: App {
                 Button(L("立即刷新")) { monitor.refreshNow() }
                     .keyboardShortcut("r", modifiers: .command)
                 Divider()
-                Picker(L("刷新速率"), selection: $monitor.refreshRate) {
-                    ForEach(RefreshRate.allCases) { rate in
-                        Text(rate.displayName).tag(rate)
-                    }
-                }
-                Divider()
-                Picker(L("外观"), selection: $theme.theme) {
-                    ForEach(AppTheme.allCases) { option in
-                        Text(option.displayName).tag(option)
-                    }
-                }
-                Picker(L("语言"), selection: $localizer.language) {
-                    ForEach(AppLanguage.allCases) { option in
-                        Text(option.displayName).tag(option)
-                    }
-                }
-                Divider()
                 Toggle(L("窗口置顶"), isOn: Binding(
                     get: { appDelegate.isFloating },
                     set: { appDelegate.setFloating($0) }

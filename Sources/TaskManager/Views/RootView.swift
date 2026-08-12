@@ -71,14 +71,6 @@ struct RootView: View {
             }
             .navigationTitle(page.wrappedValue.title)
         }
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                AppearanceMenu()
-            }
-            ToolbarItem(placement: .primaryAction) {
-                RefreshRateMenu()
-            }
-        }
         .onAppear {
             // 截图脚本用：指定性能页的子页
             if let tab = ProcessInfo.processInfo.environment["TM_PERF_TAB"] {
@@ -134,26 +126,6 @@ struct RootView: View {
                 focusedPID = pid
                 pageID = Page.details.rawValue
             })
-        }
-    }
-}
-
-struct RefreshRateMenu: View {
-    @Environment(SystemMonitor.self) private var monitor
-
-    var body: some View {
-        @Bindable var monitor = monitor
-        Menu {
-            Picker(L("刷新速率"), selection: $monitor.refreshRate) {
-                ForEach(RefreshRate.allCases) { rate in
-                    Text(rate.displayName).tag(rate)
-                }
-            }
-            .pickerStyle(.inline)
-            Divider()
-            Button(L("立即刷新")) { monitor.refreshNow() }
-        } label: {
-            Label(L("刷新速率：%@", monitor.refreshRate.displayName), systemImage: "timer")
         }
     }
 }

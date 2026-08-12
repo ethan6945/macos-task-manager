@@ -367,6 +367,7 @@ extension Localizer {
         // MARK: 网络端口
         "网络端口": "Network Ports",
         "只看本机可访问的服务": "Only services reachable from this Mac",
+        "显示所有网络接口": "Show all-interface binds",
         "监听中 %d 个端口": "%d listening ports",
         "搜索端口或进程": "Search ports or processes",
         "端口号": "Port",

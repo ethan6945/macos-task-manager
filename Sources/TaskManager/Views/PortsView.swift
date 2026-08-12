@@ -14,6 +14,8 @@ struct PortsView: View {
     @State private var sortOrder = [KeyPathComparator(\PortRow.port, order: .forward)]
     /// 默认只看能用浏览器打开的，也就是本页的主要用途
     @State private var localOnly = true
+    /// 绑在 *（所有网卡）上的多半是系统服务，默认收起来，只留下真正的本机服务
+    @State private var showAllInterfaces = false
     /// 探测结果按行 id 存。只在用户点「检测」时才有值。
     @State private var probes: [ListeningPort.ID: WebProbeResult] = [:]
 
@@ -21,6 +23,7 @@ struct PortsView: View {
         VStack(spacing: 0) {
             HStack {
                 Toggle(L("只看本机可访问的服务"), isOn: $localOnly).toggleStyle(.checkbox)
+                Toggle(L("显示所有网络接口"), isOn: $showAllInterfaces).toggleStyle(.checkbox)
                 Spacer()
                 Text(L("监听中 %d 个端口", rows.count))
                     .font(.caption).foregroundStyle(.secondary).monospacedDigit()
@@ -158,6 +161,7 @@ struct PortsView: View {
 
         var list = monitor.listeningPorts.compactMap { entry -> PortRow? in
             if localOnly && !entry.isLocallyReachable { return nil }
+            if !showAllInterfaces && entry.isAnyAddress { return nil }
             let process = processes[entry.pid]
             let row = PortRow(
                 entry: entry,
