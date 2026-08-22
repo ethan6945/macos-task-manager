@@ -14,7 +14,7 @@ Free, open source, and it asks for **no password and no system permissions**.
 [![Release](https://img.shields.io/github/v/release/ethan6945/macos-task-manager?include_prereleases)](https://github.com/ethan6945/macos-task-manager/releases/latest)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-ffdd00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/ethan6945)
 
-![Performance](docs/screenshots/performance-cpu.png)
+![Task Manager for macOS](docs/demo.gif)
 
 ---
 
@@ -108,6 +108,7 @@ Task Manager.
 
 | | |
 |---|---|
+| **Performance › CPU** | ![CPU](docs/screenshots/performance-cpu.png) |
 | **Processes** | ![Processes](docs/screenshots/processes.png) |
 | **Network ports** | ![Network ports](docs/screenshots/ports.png) |
 | **Performance › Memory** | ![Memory](docs/screenshots/performance-memory.png) |
@@ -129,8 +130,8 @@ Task Manager.
 
 | | |
 |---|---|
-| **Update speed** | High (1s) · Normal (2s) · Low (4s) · Paused — toolbar or the View menu |
-| **Appearance** | Light, dark or match system, plus 8 accent colours |
+| **Update speed** | High (1s) · Normal (2s) · Low (4s) · Paused — **Settings › Update Speed** |
+| **Appearance** | Light, dark or match system, plus 8 accent colours — **Settings › Appearance** |
 | **Language** | English or 简体中文, **switches instantly without restarting** |
 | **Sidebar** | Hide the pages you never use — **Settings › Sidebar** |
 | **Save a snapshot** | **⇧⌘S** saves the window as a PNG |

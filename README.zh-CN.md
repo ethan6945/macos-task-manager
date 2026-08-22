@@ -13,7 +13,7 @@
 [![Release](https://img.shields.io/github/v/release/ethan6945/macos-task-manager?include_prereleases)](https://github.com/ethan6945/macos-task-manager/releases/latest)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-ffdd00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/ethan6945)
 
-![性能页](docs/screenshots/performance-cpu.png)
+![macOS 版任务管理器](docs/demo.gif)
 
 ---
 
@@ -99,6 +99,7 @@ xattr -dr com.apple.quarantine "/Applications/Task Manager.app"
 
 | | |
 |---|---|
+| **性能 › CPU** | ![CPU](docs/screenshots/performance-cpu.png) |
 | **进程** | ![进程](docs/screenshots/processes.png) |
 | **网络端口** | ![网络端口](docs/screenshots/ports.png) |
 | **性能 › 内存** | ![内存](docs/screenshots/performance-memory.png) |
@@ -120,8 +121,8 @@ xattr -dr com.apple.quarantine "/Applications/Task Manager.app"
 
 | | |
 |---|---|
-| **刷新速率** | 高 (1s) · 正常 (2s) · 低 (4s) · 暂停 —— 工具栏或「查看」菜单 |
-| **外观** | 浅色、深色或跟随系统，另有 8 种强调色 |
+| **刷新速率** | 高 (1s) · 正常 (2s) · 低 (4s) · 暂停 —— **设置 › 刷新速率** |
+| **外观** | 浅色、深色或跟随系统，另有 8 种强调色 —— **设置 › 外观** |
 | **语言** | 中文 / English，**切换即生效，不用重启** |
 | **侧栏** | 用不上的页面可以关掉 —— **设置 › 侧栏** |
 | **保存窗口截图** | **⇧⌘S** 把窗口存成 PNG |
